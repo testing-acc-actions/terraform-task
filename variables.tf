@@ -1,1 +1,3 @@
-
+variable "environment"{
+  default = "developer"
+}
