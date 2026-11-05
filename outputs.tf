@@ -1,3 +1,3 @@
 output "this_environment"{
-  value = "dev"
+  value = "environment"
 }
