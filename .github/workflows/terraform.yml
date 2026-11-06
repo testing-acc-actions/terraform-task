@@ -25,5 +25,8 @@ jobs:
       - name: Validate Terraform configuration
         run: terraform validate
         
-      - name: Generate saved Terraform plan
-        run: terraform plan
+      - name: List Terraform Files
+        run: ls -la
+
+      - name: show main.tf
+        run: cat main.tf
