@@ -6,3 +6,4 @@ source = "harshicrop/aws"
 version = "~>1.6"
 }
 }
+}
