@@ -18,3 +18,13 @@ module "ALB" {
   vpc_id    = module.VPC.vpc_id
   subnet_ids = module.VPC.public_subnet_ids
 }
+module "EC2" {
+  source = "./modules/EC2"
+
+  vpc_id                 = module.VPC.vpc_id
+  subnet_id              = module.VPC.public_subnet_ids[0]
+  alb_security_group_id  = module.ALB.security_group_id
+
+  instance_type = var.instance_type
+  ami_id        = var.ami_id
+}
