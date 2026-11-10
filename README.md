@@ -1,64 +1,72 @@
 
-# Terraform Practice Project
+# Terraform ALB and Route 53 Project
 
-This repository is part of my hands-on learning journey with Terraform and AWS.
+## Project Overview
 
-The goal of this project is to understand how Terraform works with modules, providers, variables, and outputs.
+This project demonstrates how to build AWS infrastructure using Terraform modules.
 
-## What This Project Does
+The project includes a VPC, EC2 instance, Application Load Balancer (ALB), and Route 53 DNS configuration.
 
-- Configures the AWS provider.
-- Creates an AWS VPC configuration using a reusable module.
-- Exports the VPC ID through Terraform outputs.
-- Uses GitHub Actions to check Terraform formatting and validate the configuration.
+## Architecture
+
+The infrastructure is organized into the following components:
+
+1. **VPC** – Creates a Virtual Private Cloud with public subnets.
+2. **Internet Gateway** – Provides internet connectivity to the public subnets.
+3. **EC2** – Hosts the application.
+4. **Application Load Balancer (ALB)** – Distributes incoming HTTP traffic to the EC2 instance.
+5. **Route 53** – Creates an alias DNS record pointing to the ALB.
 
 ## Project Structure
 
 ```text
 terraform-task/
+│
+├── .github/
+│   └── workflows/
+│       └── terraform.yml
+│
+├── modules/
+│   ├── VPC/
+│   ├── EC2/
+│   ├── ALB/
+│   ├── route53/
+│   └── s3/
+│
 ├── main.tf
 ├── providers.tf
 ├── variables.tf
 ├── outputs.tf
-├── backend.tf
-├── modules/
-│   └── VPC/
-│       ├── Vpc.tf
-│       └── outputs.tf
-└── .github/
-    └── workflows/
-        └── terraform.yml
+└── README.md
 ```
 
 ## Tools Used
 
 - Terraform
-- AWS Provider
+- AWS
 - GitHub
 - GitHub Actions
 
-## GitHub Actions
+## CI Workflow
 
-The workflow runs these checks:
+GitHub Actions is used to automatically check the Terraform configuration.
 
-1. Checks out the repository.
-2. Installs Terraform.
-3. Checks Terraform formatting.
-4. Initializes Terraform without a backend.
-5. Validates the Terraform configuration.
+The workflow performs:
 
-## Important Note
+- Terraform formatting checks
+- Terraform initialization
+- Terraform validation
+- Terraform dependency graph generation
 
-This project currently focuses on Terraform formatting, initialization, and validation.
+## Important Notes
 
-It does not deploy AWS resources through GitHub Actions.
+- This project is currently for learning and practice.
+- The GitHub Actions workflow validates the Terraform code only.
+- Terraform `plan` and `apply` are not executed.
+- No AWS infrastructure is created by the CI workflow.
+- Route 53 requires an existing hosted zone and domain name.
+- Deploying AWS resources such as ALB, EC2, and Route 53 may incur charges.
 
-AWS credentials are required for operations such as planning against the AWS provider and deploying infrastructure.
+## Learning Objective
 
-## Learning Goals
-
-- Understand Terraform configuration.
-- Learn how to create and use modules.
-- Understand Terraform variables and outputs.
-- Practise Infrastructure as Code.
-- Automate Terraform checks using GitHub Actions.
+Understand how to organize Terraform using modules and configure an Application Load Balancer with Route 53 DNS integration.
