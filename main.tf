@@ -27,4 +27,5 @@ module "EC2" {
 
   instance_type = var.instance_type
   ami_id        = var.ami_id
+  target_group_arn = module.ALB.target_group_arn
 }
