@@ -12,3 +12,9 @@ terraform {
 module "VPC" {
   source = "./modules/VPC"
 }
+module "ALB" {
+  source = "./modules/ALB"
+
+  vpc_id    = module.VPC.vpc_id
+  subnet_ids = module.VPC.public_subnet_ids
+}
