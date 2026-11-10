@@ -6,6 +6,13 @@ variable "alb_security_group_id" {
   description = "Security group ID of the ALB"
   type        = string
 }
+
+variable "target_group_arn" {
+  description = "ARN of the ALB target group"
+  type        = string
+}
+
+
 variable "subnet_id" {
   description = "ID of the public subnet"
   type        = string
