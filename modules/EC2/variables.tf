@@ -1,5 +1,20 @@
-variable "ami_id" {
-  description = "AMI ID for the EC2 instance"
+variable "vpc_id" {
+  description = "ID of the VPC"
+  type        = string
+}
+
+variable "alb_security_group_id" {
+  description = "Security group ID of the ALB"
+  type        = string
+}
+
+variable "target_group_arn" {
+  description = "ARN of the ALB target group"
+  type        = string
+}
+
+variable "subnet_id" {
+  description = "ID of the public subnet"
   type        = string
 }
 
@@ -9,12 +24,7 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "subnet_id" {
-  description = "Subnet where the EC2 instance will be launched"
+variable "ami_id" {
+  description = "AMI ID for the EC2 instance"
   type        = string
-}
-
-variable "security_group_ids" {
-  description = "Security groups attached to the EC2 instance"
-  type        = list(string)
 }
