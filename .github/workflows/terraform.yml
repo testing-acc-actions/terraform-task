@@ -1,8 +1,7 @@
-
 name: Terraform CI
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   validate:
@@ -12,23 +11,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-           
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Check Terraform formatting
-        run: terraform fmt 
-      - name: Initialize Terraform without a backend
+        run: terraform fmt -check -recursive
+
+      - name: Initialize Terraform
         run: terraform init -backend=false
 
       - name: Validate Terraform configuration
         run: terraform validate
-        
-      - name: List Terraform Files
-        run: ls -la
 
-      - name: show main.tf
-        run: cat main.tf
+      - name: Generate Terraform dependency graph
+        run: terraform graph -type=plan > terraform-graph.dot
 
-      - name: show the output 
-        run: terraform output 
+      - name: Display Terraform files
+        run: find . -name "*.tf" -not -path "./.terraform/*"
