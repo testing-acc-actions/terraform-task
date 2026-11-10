@@ -17,10 +17,10 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Check Terraform formatting
-        run: terraform fmt
+        run: terraform fmt -check -recursive
 
       - name: Initialize Terraform without a backend
-        run: terraform init
+        run: terraform init -backend=false
 
       - name: Validate Terraform configuration
         run: terraform validate
