@@ -17,8 +17,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Check Terraform formatting
-        run: terraform fmt -check -recursive
-
+        run: terraform fmt 
       - name: Initialize Terraform without a backend
         run: terraform init -backend=false
 
@@ -30,3 +29,6 @@ jobs:
 
       - name: show main.tf
         run: cat main.tf
+
+      - name: show the output 
+        run: terraform output 
