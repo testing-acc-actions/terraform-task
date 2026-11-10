@@ -1,20 +1,16 @@
 
+
+# Create an EC2 instance for the application
 resource "aws_instance" "webserver" {
-  ami           = "ami-0f58b397bc5c1f2e8"
-  instance_type = "t2.micro"
+  ami           = var.ami_id
+  instance_type = var.instance_type
+
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = var.security_group_ids
 
   tags = {
-    Name = "Terraform-EC2"
+    Name        = "vpc-cicd-webserver"
+    Environment = "dev"
+    Project     = "vpc-cicd"
   }
 }
-
-resource "aws_instance" "Internetserver" {
-  ami           = "ami-0f58b397bc5c1f2e9"
-  instance_type = "var.instance"
-
-  tags = {
-    Name = "Terraform-Dev-EC2"
-  }
-}
-
-
