@@ -17,6 +17,7 @@ variable "database_name" {
   description = "Name of the initial PostgreSQL database"
   type        = string
 }
+
 variable "master_username" {
   description = "Master username for the Aurora database"
   type        = string
