@@ -48,7 +48,7 @@ def lambda_handler(event, context):
             })
         }
 
-       finally:
+    finally:
         try:
             if cursor is not None:
                 cursor.close()
