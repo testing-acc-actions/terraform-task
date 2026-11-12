@@ -1,4 +1,3 @@
-
 output "vpc_id" {
   description = "ID of the application VPC"
   value       = module.networking.vpc_id
