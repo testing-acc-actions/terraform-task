@@ -9,29 +9,35 @@ secrets_client = boto3.client("secretsmanager")
 
 def lambda_handler(event, context):
 
-    secret_response = secrets_client.get_secret_value(
-        SecretId=os.environ["DB_SECRET_ARN"]
-    )
-
-    credentials = json.loads(secret_response["SecretString"])
-
-    connection = pg8000.connect(
-        host=os.environ["DB_HOST"],
-        port=int(os.environ["DB_PORT"]),
-        database=os.environ["DB_NAME"],
-        user=credentials["username"],
-        password=credentials["password"],
-        ssl_context=True
-    )
+    connection = None
+    cursor = None
 
     try:
+        # Retrieve database credentials from Secrets Manager
+        secret_response = secrets_client.get_secret_value(
+            SecretId=os.environ["DB_SECRET_ARN"]
+        )
+
+        credentials = json.loads(secret_response["SecretString"])
+
+        # Connect to Aurora PostgreSQL
+        connection = pg8000.connect(
+            host=os.environ["DB_HOST"],
+            port=int(os.environ["DB_PORT"]),
+            database=os.environ["DB_NAME"],
+            user=credentials["username"],
+            password=credentials["password"],
+            ssl_context=True
+        )
+
         cursor = connection.cursor()
 
-        cursor.execute("SELECT current_database(), version()")
+        # Execute a test query
+        cursor.execute(
+            "SELECT current_database(), version()"
+        )
 
         result = cursor.fetchone()
-
-        cursor.close()
 
         return {
             "statusCode": 200,
@@ -43,4 +49,11 @@ def lambda_handler(event, context):
         }
 
     finally:
-        connection.close()
+
+        # Always close the cursor
+        if cursor is not None:
+            cursor.close()
+
+        # Always close the database connection
+        if connection is not None:
+            connection.close()
