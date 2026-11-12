@@ -27,7 +27,6 @@ variable "common_tags" {
   }
 }
 
-
 variable "vpc_cidr" {
   description = "CIDR range for the VPC"
   type        = string
