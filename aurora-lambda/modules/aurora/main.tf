@@ -40,3 +40,22 @@ resource "aws_rds_cluster" "aurora" {
     Name = "${var.project_name}-aurora-cluster"
   })
 }
+
+
+resource "aws_rds_cluster_instance" "aurora" {
+  identifier         = "${var.project_name}-aurora-instance"
+  cluster_identifier = aws_rds_cluster.aurora.id
+
+  instance_class = "db.serverless"
+  engine         = aws_rds_cluster.aurora.engine
+  engine_version = aws_rds_cluster.aurora.engine_version
+
+  publicly_accessible = false
+
+  auto_minor_version_upgrade = true
+  copy_tags_to_snapshot      = true
+
+  tags = merge(var.common_tags, {
+    Name = "${var.project_name}-aurora-instance"
+  })
+}
