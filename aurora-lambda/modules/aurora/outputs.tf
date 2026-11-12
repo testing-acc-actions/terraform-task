@@ -19,6 +19,6 @@ output "aurora_cluster_identifier" {
 }
 
 output "master_user_secret_arn" {
-  description = "ARN of the AWS Secrets Manager secret containing the master credentials"
+  description = "ARN of the Secrets Manager secret containing master credentials"
   value       = aws_rds_cluster.aurora.master_user_secret[0].secret_arn
 }
