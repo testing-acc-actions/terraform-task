@@ -113,3 +113,42 @@ resource "aws_security_group" "secrets_manager_endpoint" {
     Name = "${var.project_name}-secrets-endpoint-sg"
   })
 }
+
+resource "aws_vpc_security_group_egress_rule" "lambda_to_secrets_manager" {
+  security_group_id            = aws_security_group.lambda.id
+  referenced_security_group_id = aws_security_group.secrets_manager_endpoint.id
+
+  ip_protocol = "tcp"
+  from_port   = 443
+  to_port     = 443
+
+  description = "Allow Lambda to access Secrets Manager over HTTPS"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "secrets_manager_from_lambda" {
+  security_group_id            = aws_security_group.secrets_manager_endpoint.id
+  referenced_security_group_id = aws_security_group.lambda.id
+
+  ip_protocol = "tcp"
+  from_port   = 443
+  to_port     = 443
+
+  description = "Allow HTTPS traffic from Lambda"
+}
+
+resource "aws_vpc_endpoint" "secrets_manager" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.aws_region}.secretsmanager"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+
+  subnet_ids = aws_subnet.private[*].id
+
+  security_group_ids = [
+    aws_security_group.secrets_manager_endpoint.id
+  ]
+
+  tags = merge(var.common_tags, {
+    Name = "${var.project_name}-secrets-manager-endpoint"
+  })
+}
