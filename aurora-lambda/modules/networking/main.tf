@@ -85,3 +85,20 @@ module "networking" {
   private_subnet_cidrs  = var.private_subnet_cidrs
   common_tags           = var.common_tags
 }
+
+module "aurora" {
+  source = "./modules/aurora"
+
+  project_name            = var.project_name
+  private_subnet_ids      = module.networking.private_subnet_ids
+  aurora_security_group_id = module.networking.aurora_security_group_id
+
+  database_name = var.database_name
+  master_username = var.master_username
+  engine_version = var.engine_version
+
+  min_capacity = var.min_capacity
+  max_capacity = var.max_capacity
+
+  common_tags = var.common_tags
+}
