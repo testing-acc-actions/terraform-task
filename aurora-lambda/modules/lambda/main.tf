@@ -28,7 +28,6 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-
 resource "aws_iam_role_policy" "lambda_secrets" {
   name = "${var.project_name}-secrets-policy"
   role = aws_iam_role.lambda.id
@@ -71,10 +70,10 @@ resource "aws_lambda_function" "aurora_handler" {
 
   environment {
     variables = {
-      DB_HOST        = var.aurora_endpoint
-      DB_PORT        = tostring(var.aurora_port)
-      DB_NAME        = var.database_name
-      DB_SECRET_ARN  = var.master_user_secret_arn
+      DB_HOST       = var.aurora_endpoint
+      DB_PORT       = tostring(var.aurora_port)
+      DB_NAME       = var.database_name
+      DB_SECRET_ARN = var.master_user_secret_arn
     }
   }
 
