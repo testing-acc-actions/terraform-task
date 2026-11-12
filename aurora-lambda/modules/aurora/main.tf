@@ -1,4 +1,3 @@
-
 resource "aws_db_subnet_group" "aurora" {
   name        = "${var.project_name}-aurora-subnet-group"
   description = "Private subnet group for Aurora PostgreSQL"
@@ -40,7 +39,6 @@ resource "aws_rds_cluster" "aurora" {
     Name = "${var.project_name}-aurora-cluster"
   })
 }
-
 
 resource "aws_rds_cluster_instance" "aurora" {
   identifier         = "${var.project_name}-aurora-instance"
