@@ -77,3 +77,11 @@ resource "aws_vpc_security_group_ingress_rule" "aurora_from_lambda" {
 }
 
 
+module "networking" {
+  source = "./modules/networking"
+
+  project_name          = var.project_name
+  vpc_cidr              = var.vpc_cidr
+  private_subnet_cidrs  = var.private_subnet_cidrs
+  common_tags           = var.common_tags
+}
