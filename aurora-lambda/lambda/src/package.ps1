@@ -1,7 +1,11 @@
 $ErrorActionPreference = "Stop"
 
-$LambdaDirectory = $PSScriptRoot
-$SourceDirectory = Join-Path $LambdaDirectory "src"
+# Current directory: lambda/src
+$SourceDirectory = $PSScriptRoot
+
+# Parent directory: lambda
+$LambdaDirectory = Split-Path -Parent $PSScriptRoot
+
 $PackageDirectory = Join-Path $LambdaDirectory "package"
 $ZipFile = Join-Path $LambdaDirectory "function.zip"
 
@@ -19,7 +23,7 @@ New-Item -ItemType Directory -Path $PackageDirectory | Out-Null
 
 # Install Python dependencies
 python -m pip install `
-    -r (Join-Path $LambdaDirectory "requirements.txt") `
+    -r (Join-Path $SourceDirectory "requirements.txt") `
     -t $PackageDirectory
 
 # Copy handler into ZIP root
