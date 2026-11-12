@@ -48,12 +48,10 @@ def lambda_handler(event, context):
             })
         }
 
-    finally:
-
-        # Always close the cursor
-        if cursor is not None:
-            cursor.close()
-
-        # Always close the database connection
-        if connection is not None:
-            connection.close()
+       finally:
+        try:
+            if cursor is not None:
+                cursor.close()
+        finally:
+            if connection is not None:
+                connection.close()
