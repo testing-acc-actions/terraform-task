@@ -2,7 +2,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -12,7 +11,6 @@ resource "aws_vpc" "main" {
     Name = "${var.project_name}-vpc"
   })
 }
-
 
 resource "aws_subnet" "private" {
   count = length(var.private_subnet_cidrs)
@@ -28,14 +26,10 @@ resource "aws_subnet" "private" {
   })
 }
 
-
 resource "aws_security_group" "lambda" {
   name        = "${var.project_name}-lambda-sg"
   description = "Security group for Lambda function"
   vpc_id      = aws_vpc.main.id
-
-  ingress = []
-  egress  = []
 
   tags = merge(var.common_tags, {
     Name = "${var.project_name}-lambda-sg"
@@ -43,7 +37,27 @@ resource "aws_security_group" "lambda" {
 }
 
 resource "aws_security_group" "aurora" {
-  name        = "${var.proresource "aws_vpc_security_group_egress_rule" "lambda_to_aurora" {
+  name        = "${var.project_name}-aurora-sg"
+  description = "Security group for Aurora PostgreSQL"
+  vpc_id      = aws_vpc.main.id
+
+  tags = merge(var.common_tags, {
+    Name = "${var.project_name}-aurora-sg"
+  })
+}
+
+resource "aws_security_group" "secrets_manager_endpoint" {
+  name        = "${var.project_name}-secrets-endpoint-sg"
+  description = "Security group for Secrets Manager interface endpoint"
+  vpc_id      = aws_vpc.main.id
+
+  tags = merge(var.common_tags, {
+    Name = "${var.project_name}-secrets-endpoint-sg"
+  })
+}
+
+# Lambda -> Aurora PostgreSQL
+resource "aws_vpc_security_group_egress_rule" "lambda_to_aurora" {
   security_group_id            = aws_security_group.lambda.id
   referenced_security_group_id = aws_security_group.aurora.id
 
@@ -52,10 +66,7 @@ resource "aws_security_group" "aurora" {
   to_port     = 5432
 
   description = "Allow Lambda to connect to Aurora PostgreSQL"
-}ject_name}-aurora-sg"
-  description = "Security group for Aurora PostgreSQL"
-  vpc_id      = aws_vpc.main.id
-
+}
 
 resource "aws_vpc_security_group_ingress_rule" "aurora_from_lambda" {
   security_group_id            = aws_security_group.aurora.id
@@ -68,53 +79,7 @@ resource "aws_vpc_security_group_ingress_rule" "aurora_from_lambda" {
   description = "Allow PostgreSQL connections from Lambda only"
 }
 
-  ingress = []
-  egress  = []
-
-  tags = merge(var.common_tags, {
-    Name = "${var.project_name}-aurora-sg"
-  })
-}
-
-
-module "networking" {
-  source = "./modules/networking"
-  aws_region = var.aws_region
-
-  project_name          = var.project_name
-  vpc_cidr              = var.vpc_cidr
-  private_subnet_cidrs  = var.private_subnet_cidrs
-  common_tags           = var.common_tags
-}
-
-module "aurora" {
-  source = "./modules/aurora"
-
-  project_name            = var.project_name
-  private_subnet_ids      = module.networking.private_subnet_ids
-  aurora_security_group_id = module.networking.aurora_security_group_id
-
-  database_name = var.database_name
-  master_username = var.master_username
-  engine_version = var.engine_version
-
-  min_capacity = var.min_capacity
-  max_capacity = var.max_capacity
-
-  common_tags = var.common_tags
-}
-
-
-resource "aws_security_group" "secrets_manager_endpoint" {
-  name        = "${var.project_name}-secrets-endpoint-sg"
-  description = "Allow Lambda to access Secrets Manager endpoint"
-  vpc_id      = aws_vpc.main.id
-
-  tags = merge(var.common_tags, {
-    Name = "${var.project_name}-secrets-endpoint-sg"
-  })
-}
-
+# Lambda -> Secrets Manager interface endpoint
 resource "aws_vpc_security_group_egress_rule" "lambda_to_secrets_manager" {
   security_group_id            = aws_security_group.lambda.id
   referenced_security_group_id = aws_security_group.secrets_manager_endpoint.id
