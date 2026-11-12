@@ -102,3 +102,14 @@ module "aurora" {
 
   common_tags = var.common_tags
 }
+
+
+resource "aws_security_group" "secrets_manager_endpoint" {
+  name        = "${var.project_name}-secrets-endpoint-sg"
+  description = "Allow Lambda to access Secrets Manager endpoint"
+  vpc_id      = aws_vpc.main.id
+
+  tags = merge(var.common_tags, {
+    Name = "${var.project_name}-secrets-endpoint-sg"
+  })
+}
