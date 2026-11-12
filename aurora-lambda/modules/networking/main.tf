@@ -79,6 +79,7 @@ resource "aws_vpc_security_group_ingress_rule" "aurora_from_lambda" {
 
 module "networking" {
   source = "./modules/networking"
+  aws_region = var.aws_region
 
   project_name          = var.project_name
   vpc_cidr              = var.vpc_cidr
