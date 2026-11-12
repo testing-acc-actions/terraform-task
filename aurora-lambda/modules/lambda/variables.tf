@@ -37,5 +37,3 @@ variable "common_tags" {
   description = "Common tags applied to Lambda resources"
   type        = map(string)
 }
-
-
